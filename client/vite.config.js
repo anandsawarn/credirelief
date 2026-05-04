@@ -5,6 +5,10 @@ import path from 'node:path';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    outDir: '../server/public',
+    emptyOutDir: true
+  },
   resolve: {
     alias: {
       'react-router-dom': path.resolve(__dirname, 'src/lib/react-router-dom.jsx')

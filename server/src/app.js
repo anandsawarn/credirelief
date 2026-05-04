@@ -10,9 +10,11 @@ const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
 const fs = require('fs');
 
-// Try the common production paths Render may use.
+// Prefer the server-owned public folder created by the client build.
 const clientDistCandidates = [
+  path.resolve(__dirname, '../public'),
   path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), 'server/public'),
   path.resolve(process.cwd(), 'client/dist'),
   path.resolve(process.cwd(), '../client/dist')
 ];
