@@ -8,26 +8,26 @@ const leadsRoute = require('./routes/leads');
 const app = express();
 
 const isProduction = process.env.NODE_ENV === 'production';
-// Resolve client dist path - works from both local and production environments
-const projectRoot = process.cwd().includes('server') 
-  ? path.resolve(__dirname, '../..') 
-  : process.cwd();
-const clientDistPath = path.join(projectRoot, 'client', 'dist');
+const fs = require('fs');
+
+// Try the common production paths Render may use.
+const clientDistCandidates = [
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist')
+];
+const clientDistPath = clientDistCandidates.find((candidate) => fs.existsSync(candidate)) || clientDistCandidates[0];
 
 console.log('=== Server Config ===');
 console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('Process CWD:', process.cwd());
-console.log('Project Root:', projectRoot);
-console.log('Client Dist Path:', clientDistPath);
-
-const fs = require('fs');
-if (isProduction) {
-  const distExists = fs.existsSync(clientDistPath);
-  console.log('Client dist exists:', distExists);
-  if (distExists) {
-    const files = fs.readdirSync(clientDistPath);
-    console.log('Files in dist:', files.slice(0, 5));
-  }
+console.log('__dirname:', __dirname);
+console.log('cwd:', process.cwd());
+console.log('Client dist candidates:', clientDistCandidates);
+console.log('Selected client dist path:', clientDistPath);
+console.log('Selected dist exists:', fs.existsSync(clientDistPath));
+if (fs.existsSync(clientDistPath)) {
+  const files = fs.readdirSync(clientDistPath);
+  console.log('Files in dist:', files.slice(0, 10));
 }
 
 const configuredOrigin = process.env.CLIENT_ORIGIN;
@@ -66,7 +66,13 @@ if (isProduction) {
     if (fs.existsSync(indexPath)) {
       return res.sendFile(indexPath);
     }
-    return res.status(404).json({ error: 'index.html not found', path: indexPath });
+    return res.status(404).json({
+      error: 'index.html not found',
+      path: indexPath,
+      cwd: process.cwd(),
+      __dirname,
+      candidates: clientDistCandidates
+    });
   });
 } else {
   app.get('/', (_req, res) => {
