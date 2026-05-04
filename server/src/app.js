@@ -8,7 +8,11 @@ const leadsRoute = require('./routes/leads');
 const app = express();
 
 const isProduction = process.env.NODE_ENV === 'production';
-const clientDistPath = path.resolve(__dirname, '../../client/dist');
+// Resolve client dist path - works from both local and production environments
+const projectRoot = process.cwd().includes('server') 
+  ? path.resolve(__dirname, '../..') 
+  : process.cwd();
+const clientDistPath = path.join(projectRoot, 'client', 'dist');
 const configuredOrigin = process.env.CLIENT_ORIGIN;
 
 const corsOptions = {
