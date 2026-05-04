@@ -1,0 +1,122 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-client-bun",
+			"type": "shell",
+			"command": "bun",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-client-bun-cmd",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"bun --cwd client run build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-client-vite-direct",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d client && bunx vite build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-client-vite-bin",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d client && node_modules\\.bin\\vite build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "dev",
+			"type": "shell",
+			"command": "bun",
+			"args": [
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "git-init-push",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"init",
+				";",
+				"git",
+				"add",
+				"README.md",
+				";",
+				"git",
+				"commit",
+				"-m",
+				"first commit",
+				";",
+				"git",
+				"branch",
+				"-M",
+				"main",
+				";",
+				"git",
+				"remote",
+				"add",
+				"origin",
+				"https://github.com/anandsawarn/credirelief.git",
+				";",
+				"git",
+				"push",
+				"-u",
+				"origin",
+				"main"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "git-init-push",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d \"d:\\New folder (4)\\nishu\" && if not exist .git git init && git add README.md && git commit -m \"first commit\" && git branch -M main && git remote add origin https://github.com/anandsawarn/credirelief.git && git push -u origin main"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

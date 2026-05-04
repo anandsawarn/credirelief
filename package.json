@@ -1,0 +1,19 @@
+{
+  "name": "loan-settlement",
+  "private": true,
+  "packageManager": "bun@latest",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"bun run --cwd server dev\" \"bun run --cwd client dev\"",
+    "build": "bun run --cwd client build",
+    "start": "bun run --cwd server start",
+    "client": "bun run --cwd client dev",
+    "server": "bun run --cwd server dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
