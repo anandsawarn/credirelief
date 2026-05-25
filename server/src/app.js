@@ -5,6 +5,8 @@ const path = require('path');
 const healthRoute = require('./routes/health');
 const leadsRoute = require('./routes/leads');
 
+const compression = require('compression');
+
 const app = express();
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -39,6 +41,8 @@ const corsOptions = {
   credentials: true
 };
 
+// Enable gzip compression for faster response times
+app.use(compression());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

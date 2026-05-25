@@ -46,6 +46,37 @@ export const services = [
   }
 ];
 
+export const settlements = [
+  {
+    bank: 'HDFC Bank',
+    settledAmount: '₹80,000',
+    originalAmount: '₹1,20,000',
+    date: 'Jan 2026',
+    summary: 'Settled personal loan for a documented closure letter.'
+  },
+  {
+    bank: 'Axis Bank',
+    settledAmount: '₹1,80,000',
+    originalAmount: '₹3,20,000',
+    date: 'Feb 2026',
+    summary: 'Credit card dues negotiated to a one-time settlement.'
+  },
+  {
+    bank: 'ICICI Bank',
+    settledAmount: '₹1,40,000',
+    originalAmount: '₹2,80,000',
+    date: 'Mar 2026',
+    summary: 'Quick online settlement with formal no-dues certificate.'
+  },
+  {
+    bank: 'Kotak Mahindra',
+    settledAmount: '₹1,80,000',
+    originalAmount: '₹3,00,000',
+    date: 'Apr 2026',
+    summary: 'Business loan settlement with structured repayment waiver.'
+  }
+];
+
 export const processSteps = [
   {
     title: 'Direct lender negotiation',

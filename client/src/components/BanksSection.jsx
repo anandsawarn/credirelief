@@ -5,7 +5,7 @@ import { slugify } from '../utils/slugify';
 
 export default function BanksSection() {
   return (
-    <section id="banks" className="mt-6 rounded-4xl border border-white/10 bg-white/5 px-5 py-8 sm:px-8 lg:px-10">
+    <section id="banks" className="mt-6 rounded-4xl border border-slate-200 bg-white px-5 py-8 sm:px-8 lg:px-10">
       <SectionHeader
         eyebrow="Bank wise settlement"
         title="Pages and flow for specific banks and NBFCs"
@@ -17,7 +17,7 @@ export default function BanksSection() {
           <Link
             key={bank}
             to={`/bank/${slugify(bank)}`}
-            className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-4 text-sm text-slate-200 transition hover:border-cyan-300/30 hover:bg-slate-900"
+            className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 text-sm text-slate-700 transition hover:border-cyan-200/50 hover:bg-white"
           >
             {bank}
           </Link>

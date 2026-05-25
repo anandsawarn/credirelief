@@ -41,6 +41,44 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
     setSelectedLoanType(derivedLoanType);
   }, [derivedLoanType]);
 
+  // Listen for service selections dispatched from other components (Hero stat card)
+  useEffect(() => {
+    function onSelectService(e) {
+      const svc = e?.detail?.service;
+      if (!svc) return;
+      // Map service title to loan type and update selection
+      const loan = serviceTitleToLoanType(svc);
+      setSelectedLoanType(loan);
+      // Prefill message only if user hasn't typed one
+      setFormData((current) => ({
+        ...current,
+        message:
+          current.message && current.message.trim().length > 0
+            ? current.message
+            : `I need help with ${loan} settlement for ${derivedBank}. Please contact me.`
+      }));
+      // Smooth-scroll to contact area
+      setTimeout(() => {
+        const el = document.getElementById('contact');
+        if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+
+    window.addEventListener('select-service', onSelectService);
+    return () => window.removeEventListener('select-service', onSelectService);
+  }, [derivedBank]);
+
+  // When loan type changes (eg. from service selection), prefill the message if empty
+  useEffect(() => {
+    setFormData((current) => {
+      if (current.message && current.message.trim().length > 0) return current;
+      return {
+        ...current,
+        message: `I need help with ${derivedLoanType} settlement for ${derivedBank}. Please contact me.`
+      };
+    });
+  }, [derivedLoanType, derivedBank]);
+
   const encodedMessage = useMemo(() => {
     const message = `Hi, I need help with ${selectedLoanType} settlement for ${selectedBank}. Please contact me.`;
     return encodeURIComponent(message);
@@ -121,7 +159,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
   }
 
   return (
-    <section className="mt-6 rounded-4xl border border-white/10 bg-white/5 px-5 py-8 sm:px-8 lg:px-10">
+    <section className="mt-6 rounded-4xl border border-slate-200 bg-white px-5 py-8 sm:px-8 lg:px-10">
       <SectionHeader
         eyebrow="Quick selector"
         title="Choose bank, choose loan type, and send your details"
@@ -129,13 +167,13 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
       />
 
       <div className="mt-8 grid gap-5 xl:grid-cols-[1fr_1fr_1.1fr]">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-5">
+        <div className="rounded-3xl border border-slate-100 bg-slate-50 p-5">
           <label className="text-sm font-medium text-slate-200" htmlFor="bank-selector">
             Bank selector
           </label>
           <select
             id="bank-selector"
-            className="mt-3 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none ring-0"
+            className="mt-3 w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none ring-0"
             value={selectedBank}
             onChange={(event) => setSelectedBank(event.target.value)}
           >
@@ -145,21 +183,20 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               </option>
             ))}
           </select>
-          <p className="mt-4 text-sm leading-6 text-slate-400">
-            Selected bank: <span className="text-white">{selectedBank}</span>
+          <p className="mt-4 text-sm leading-6 text-slate-700">
+            Selected bank: <span className="text-slate-900">{selectedBank}</span>
           </p>
-          <Link className="mt-4 inline-flex rounded-xl bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" to={bankHref}>
+          <Link className="mt-4 inline-flex rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" to={bankHref}>
             Open bank page
           </Link>
         </div>
-
-        <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-5">
-          <label className="text-sm font-medium text-slate-200" htmlFor="loan-type-selector">
+        <div className="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+          <label className="text-sm font-medium text-slate-600" htmlFor="loan-type-selector">
             Loan type selector
           </label>
           <select
             id="loan-type-selector"
-            className="mt-3 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none ring-0"
+            className="mt-3 w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none ring-0"
             value={selectedLoanType}
             onChange={(event) => setSelectedLoanType(event.target.value)}
           >
@@ -169,24 +206,23 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               </option>
             ))}
           </select>
-          <p className="mt-4 text-sm leading-6 text-slate-400">
-            Selected loan type: <span className="text-white">{selectedLoanType}</span>
+          <p className="mt-4 text-sm leading-6 text-slate-700">
+            Selected loan type: <span className="text-slate-900">{selectedLoanType}</span>
           </p>
-          <Link className="mt-4 inline-flex rounded-xl bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" to={loanHref}>
+          <Link className="mt-4 inline-flex rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" to={loanHref}>
             Open loan page
           </Link>
         </div>
-
-        <form onSubmit={handleSubmit} className="rounded-3xl border border-cyan-300/20 bg-[linear-gradient(180deg,rgba(8,47,73,0.96),rgba(15,23,42,0.98))] p-5">
-          <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">Contact now</p>
-          <h3 className="mt-3 text-xl font-semibold text-white">Send your details to admin</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-300">
+        <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-100 bg-white p-5">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Contact now</p>
+          <h3 className="mt-3 text-xl font-semibold text-slate-900">Send your details to admin</h3>
+          <p className="mt-3 text-sm leading-6 text-slate-700">
             Fill the form below. The selected bank and loan type will be included automatically, and the enquiry will be forwarded to admin email.
           </p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <input
-              className="rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 sm:col-span-2"
+              className="rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 sm:col-span-2"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -194,7 +230,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               required
             />
             <input
-              className="rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500"
+              className="rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400"
               name="mobile"
               value={formData.mobile}
               onChange={handleChange}
@@ -202,7 +238,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               required
             />
             <input
-              className="rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500"
+              className="rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400"
               type="email"
               name="email"
               value={formData.email}
@@ -211,7 +247,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               required
             />
             <textarea
-              className="min-h-28 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 sm:col-span-2"
+              className="min-h-28 rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 sm:col-span-2"
               name="message"
               value={formData.message}
               onChange={handleChange}
@@ -222,7 +258,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
 
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
               href={whatsappHref}
               target="_blank"
               rel="noreferrer"
@@ -230,13 +266,13 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
               WhatsApp Now
             </a>
             <a
-              className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
               href={mailtoHref}
             >
               Email Now
             </a>
             <button
-              className="rounded-xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded-xl bg-cyan-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-70"
               type="submit"
               disabled={isSubmitting}
             >
@@ -245,7 +281,7 @@ export default function InquirySection({ initialBank = defaultBank, initialLoanT
           </div>
 
           {status.message ? (
-            <p className={`mt-4 text-sm ${status.type === 'error' ? 'text-red-300' : 'text-emerald-300'}`}>
+            <p className={`mt-4 text-sm ${status.type === 'error' ? 'text-red-500' : 'text-emerald-700'}`}>
               {status.message}
             </p>
           ) : null}
