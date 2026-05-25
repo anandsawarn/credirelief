@@ -5,7 +5,13 @@ const path = require('path');
 const healthRoute = require('./routes/health');
 const leadsRoute = require('./routes/leads');
 
-const compression = require('compression');
+let compression;
+try {
+  compression = require('compression');
+} catch (err) {
+  console.warn('Optional module "compression" not found — continuing without gzip compression.');
+  compression = null;
+}
 
 const app = express();
 
@@ -41,8 +47,12 @@ const corsOptions = {
   credentials: true
 };
 
-// Enable gzip compression for faster response times
-app.use(compression());
+// Enable gzip compression for faster response times (optional)
+if (compression) {
+  app.use(compression());
+} else {
+  // no-op — compression not available
+}
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
