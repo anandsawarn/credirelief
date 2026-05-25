@@ -8,9 +8,8 @@
   ],
   "scripts": {
     "dev": "concurrently \"bun run --cwd server dev\" \"bun run --cwd client dev\"",
-    "build": "bun run --cwd client build",
+    "build": "bun install --cwd server || npm --prefix server ci && bun run --cwd client build",
     "start": "bun run --cwd server start",
-    "postinstall": "bun install --cwd server || npm --prefix server ci",
     "client": "bun run --cwd client dev",
     "server": "bun run --cwd server dev"
   },
